@@ -5,7 +5,7 @@
 
 	  var denominations = ["0.05","0.10","0.25","1.00","2.00", "5.00","10.00","20.00","50.00","100.00"];
 
-	  var cardHTMLString = '<div class="row valign-wrapper"><div class="col s12 m6" style="margin:auto"><div class="card  z-depth-5"><div class="card-content black-text center-align" style="padding:5px"><span class="card-title black-text currency-value" style="font-size:30px">$0.05</span><span> X </span> <span class="grey-text" style="font-size:30px"> 0 </span></div><div class="card-action" style="padding:10px"><form action="#"><p class="range-field"><input type="range" name="points" min="0" max="20" class="active"></span></p></form></div></div></div></div>';
+	  var cardHTMLString = '<div class="row valign-wrapper"><div class="col s12 m6" style="margin:auto"><div class="card  z-depth-5"><div class="card-content black-text center-align" style="padding:5px"><span class="card-title black-text currency-value" style="font-size:30px">$0.05</span><span> X </span> <span class="grey-text" style="font-size:30px"> 0 </span></div><div class="card-action valign-wrapper" style="padding:10px"><div style="margin:auto;"><span class="input-number-decrement">–</span><input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"><span class="input-number-increment">+</span></div></div></div></div></div>';
 
 	 	 // array of coin objects
 		var coins = [];	
@@ -26,7 +26,8 @@
 			coin.container = makeDom(cardHTMLString);
 			coin.titleContainer = coin.container.childNodes[0].childNodes[0].childNodes[0].childNodes[0];  
 			coin.counterContainer = coin.container.childNodes[0].childNodes[0].childNodes[0].childNodes[3];
-			coin.inputContainer = coin.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0].childNodes[0];
+			coin.inputContainer = coin.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[1];
+			console.log(coin.inputContainer); //stopped hjere, add individual click handlers for the number + - controls
 			if(denominations[i] >= 2.00) {
 				coin.type = "note";
 			}
@@ -56,10 +57,10 @@
 
 			// append elements to the dom
 			if( coin.type == "coin" ){
-				//$(".coin-container").append(coin.container);
+				$(".coin-container").append(coin.container);
 			}
 			else {
-				//$(".note-container").append(coin.container);
+				$(".note-container").append(coin.container);
 			}
 			
 			
