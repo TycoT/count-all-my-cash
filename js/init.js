@@ -56,10 +56,10 @@
 
 			// append elements to the dom
 			if( coin.type == "coin" ){
-				$(".coin-container").append(coin.container);
+				//$(".coin-container").append(coin.container);
 			}
 			else {
-				$(".note-container").append(coin.container);
+				//$(".note-container").append(coin.container);
 			}
 			
 			
