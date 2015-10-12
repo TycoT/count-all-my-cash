@@ -60,8 +60,14 @@
     <div class="container">
       <div class="row valign-wrapper">
         <div class="col s12 m6" style="margin:auto">
-          <a style="width:100%" class="waves-effect waves-light btn-large green accent-3"> <i class="material-icons">attach_money</i>
-            <span id="total-display" style="font-size:30px">0.00</span>
+          <a id="clear-button" style="width:100%" class="waves-effect waves-red btn-large green accent-3"> 
+            <div>
+              <i class="material-icons">attach_money</i>
+              <span id="total-display" style="font-size:30px">0.00</span>
+            </div>
+            <div style="display:none;">
+              <span style="font-size:30px;">Clear ?</span>            
+            </div>
           </a>
         </div>
         
@@ -78,7 +84,6 @@
   <!--  Scripts-->
   <script src="https://code.jquery.com/jquery-2.1.1.min.js"></script>
   <script src="js/init.js"></script>
-  <!--<script src="js/inputNumber.js"></script>-->
   <script src="js/materialize.js"></script>
 
   
