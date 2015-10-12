@@ -149,6 +149,17 @@
 				calcTotal();
 			});
 
+			obj.inputContainer.addEventListener("focus", function() {
+				var footer = document.getElementById("footer-container");
+				footer.setAttribute("style","");
+				$(".temp").css("display", "none");
+			});
+
+			obj.inputContainer.addEventListener("focusout", function() {
+				var footer = document.getElementById("footer-container");
+				footer.setAttribute("style","position:fixed;width:100%;bottom:0px");
+			});
+
 			// attach event click handler for decrement button
 			obj.decrementButton.addEventListener("click", function() {
 				obj.inputContainer.value = parseInt(obj.inputContainer.value) - 1;
