@@ -30,7 +30,7 @@
 			c.decrementButton = c.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0];
 			c.incrementButton = c.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[2];
 
-			if(denominations[i] >= 2.00) {
+			if(denominations[i] >= 5.00) {
 				c.type = "note";
 			}
 			else {
@@ -149,16 +149,21 @@
 				calcTotal();
 			});
 
-			obj.inputContainer.addEventListener("focus", function() {
-				var footer = document.getElementById("footer-container");
-				footer.setAttribute("style","");
-				$(".temp").css("display", "none");
-			});
+			//if mobile, when user focus on input, we remove the fixed footer, to allow more space
+			if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
+			
+				obj.inputContainer.addEventListener("focus", function() {
+					var footer = document.getElementById("footer-container");
+					footer.setAttribute("style","");
+					$(".temp").css("display", "none");
+				});
 
-			obj.inputContainer.addEventListener("focusout", function() {
-				var footer = document.getElementById("footer-container");
-				footer.setAttribute("style","position:fixed;width:100%;bottom:0px");
-			});
+				obj.inputContainer.addEventListener("focusout", function() {
+					var footer = document.getElementById("footer-container");
+					footer.setAttribute("style","position:fixed;width:100%;bottom:0px");
+					$(".temp").css("display", "inline-block");
+				});
+			}
 
 			// attach event click handler for decrement button
 			obj.decrementButton.addEventListener("click", function() {
