@@ -39,7 +39,7 @@ $(document).ready(function(){
 		// default input to 0 
 		c.inputContainer.value = parseInt(0);
 
-		attachHanlders(c);
+		//attachHanlders(c);
 
 
 		// append elements to the dom
