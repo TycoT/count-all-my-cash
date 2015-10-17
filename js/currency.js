@@ -43,12 +43,7 @@ $(document).ready(function(){
 
 
 		// append elements to the dom
-		if( c.type == "coin" ){
-			$(".coin-container").append(c.container);
-		}
-		else {
-			$(".note-container").append(c.container);
-		}
+		$(".currency-container").append(c.container);
 		
 		
 		// push to coins array
@@ -98,6 +93,37 @@ $(document).ready(function(){
 		}
 		
 	});
+
+	$('#asc').parent().addClass("green accent-3");
+	$('.sortBtn').click(function(){
+		var ascendingBool = true; //by default will be ascending
+		// test if ascending - find the first currecny value and compare with first element of the denomination array
+		if (denominations[0] == $(".currency-value").first().html()) {
+			ascendingBool = true;
+		}
+		else{
+			ascendingBool = false;
+		}
+
+		if ( this.id == "asc" && !ascendingBool || this.id == "desc" && ascendingBool ){
+			// we ascend it.
+			var container = $(".currency-container").children().detach();
+			// looping from the back
+			for ( var i = container.length; i >= 0; i-- ) {
+				$(".currency-container").append(container[i]);
+			}
+
+			// change the background of the button
+			if( !ascendingBool ){
+				$('#asc').parent().addClass("green accent-3");
+				$('#desc').parent().removeClass("green accent-3");
+			}
+			else {
+				$('#desc').parent().addClass("green accent-3");
+				$('#asc').parent().removeClass("green accent-3");
+			}
+		}
+	})
 
 
 
