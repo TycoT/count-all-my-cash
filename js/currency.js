@@ -39,15 +39,15 @@ $(document).ready(function(){
 		// default input to 0 
 		c.inputContainer.value = parseInt(0);
 
-		//attachHanlders(c);
+		attachHanlders(c);
 
 
 		// append elements to the dom
 		if( c.type == "coin" ){
-			$(".coin-container").append(c.container);
+			//$(".coin-container").append(c.container);
 		}
 		else {
-			$(".note-container").append(c.container);
+			//$(".note-container").append(c.container);
 		}
 		
 		
