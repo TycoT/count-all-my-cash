@@ -2,7 +2,7 @@ $(document).ready(function(){
 
 	var denominations = ["0.05","0.10","0.25","1.00","2.00", "5.00","10.00","20.00","50.00","100.00"];
 
-	var cardHTMLString = '<div class="row valign-wrapper"><div class="col s12 m6" style="margin:auto"><div class="card  z-depth-5"><div class="card-content black-text center-align" style="padding:5px"><span class="card-title black-text currency-value" style="font-size:30px">$0.05</span><span> X </span> <span class="grey-text" style="font-size:30px"> 0 </span></div><div class="card-action valign-wrapper" style="padding:10px"><div style="margin:auto;"><span class="input-number-decrement">–</span><input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"><span class="input-number-increment">+</span></div></div></div></div></div>';
+	var cardHTMLString = '<div class="row valign-wrapper"><div class="col s12 m6" style="margin:auto"><div class="card "><div class="card-content black-text center-align" style="padding:5px"><span class="card-title black-text currency-value" style="font-size:30px">$0.05</span><span> X </span> <span class="grey-text" style="font-size:30px"> 0 </span></div><div class="card-action valign-wrapper" style="padding:10px"><div style="margin:auto;"><span class="input-number-decrement">–</span><input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"><span class="input-number-increment">+</span></div></div></div></div></div>';
 
 		 // array of coin objects
 	var currencyContainer = [];	
@@ -44,10 +44,10 @@ $(document).ready(function(){
 
 		// append elements to the dom
 		if( c.type == "coin" ){
-			//$(".coin-container").append(c.container);
+			$(".coin-container").append(c.container);
 		}
 		else {
-			//$(".note-container").append(c.container);
+			$(".note-container").append(c.container);
 		}
 		
 		
