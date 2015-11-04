@@ -8,6 +8,20 @@
 
 #index-banner {
   background-color:#F2EFFF;
+
+  /* gradient
+  background: rgb(255,0,0);
+  background: -webkit-gradient(linear, 0 0, 0 100%, from(rgb(255,0,0)), to(rgb(255,225,0)));
+  background: -webkit-linear-gradient(rgb(255,0,0) 0%, rgb(255,225,0) 100%);
+  background: -moz-linear-gradient(rgb(255,0,0) 0%, rgb(255,225,0) 100%);
+  background: -o-linear-gradient(rgb(255,0,0) 0%, rgb(255,225,0) 100%);
+  background: linear-gradient(rgb(255,0,0) 0%, rgb(255,225,0) 100%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ff0000', endColorstr='#ffe100',GradientType=0 );
+  */
+}
+
+.currency-container {
+  padding-bottom:40px;
 }
 
 .icon-block {
@@ -56,15 +70,32 @@
 }
 
 .input-number-decrement {
-  border-right: none;
+  /*border-right: none;*/
   border-radius: 4px 0 0 4px;
 }
 
 .input-number-increment {
-  border-left: none;
+  /*border-left: none;*/
   border-radius: 0 4px 4px 0;
 }
 
 footer.page-footer {
 	margin-top:0px;
+}
+
+#copyright {
+  position:absolute;
+  bottom:60px;
+  margin-left:14px;
+}
+
+
+
+/* INPUT radio */
+[type="radio"]:not(:checked) + label, [type="radio"]:checked + label {
+  padding-left:25px;
+}
+
+.radio-container {
+  margin: 0px 25px 15px 25px;
 }

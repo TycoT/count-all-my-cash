@@ -2,8 +2,40 @@ $(document).ready(function(){
 
 	var denominations = ["0.05","0.10","0.25","1.00","2.00", "5.00","10.00","20.00","50.00","100.00"];
 
-	var cardHTMLString = '<div class="row valign-wrapper"><div class="col s12 m6" style="margin:auto"><div class="card "><div class="card-content black-text center-align" style="padding:5px"><span class="card-title black-text currency-value" style="font-size:30px">$0.05</span><span> X </span> <span class="grey-text" style="font-size:30px"> 0 </span></div><div class="card-action valign-wrapper" style="padding:10px"><div style="margin:auto;"><span class="input-number-decrement">–</span><input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"><span class="input-number-increment">+</span></div></div></div></div></div>';
-
+	var cardHTMLString = 
+	'<div class="row valign-wrapper"> '+
+		'<div class="col s12 m6" style="margin:auto"> '+
+			'<div class="card"> '+
+				'<div class="card-content black-text center-align" style="padding:5px;"> '+
+					'<span class="card-title black-text currency-value" style="font-size:30px">$0.05</span> '+
+					'<span> X </span> '+
+					'<span class="grey-text counter-container" style="font-size:30px"> 0 </span> '+
+				'</div>'+
+				'<div class="card-action valign-wrapper" style="padding:10px"> '+
+					'<div class="input-field col s12 radio-container" style="margin: 0px 25px 15px 25px;"> '+
+						'<p style="margin-top:0px;margin-bottom:0px;text-align:center;">Bank Roll Amount</p>' +
+						'<form action="#"> '+
+					        '<input class="with-gap" name="group1" type="radio" id="20wrapper"  /> '+
+					        '<label for="20wrapper">20</label> '+
+					        '<input class="with-gap" name="group1" type="radio" id="25wrapper"  /> '+
+					        '<label for="25wrapper">25</label> '+
+					        '<input class="with-gap" name="group1" type="radio" id="40wrapper"  /> '+
+					        '<label for="40wrapper">40</label> '+
+					        '<input class="with-gap" name="group1" type="radio" id="50wrapper"  /> '+
+					        '<label for="50wrapper">50</label> '+
+					    '</form> '+		 			
+				    '</div> '+
+				'</div> '+
+				'<div class="card-action valign-wrapper" style="padding:10px"> '+
+					'<div style="margin:auto;"> '+
+						'<span class="input-number-decrement">–</span> '+
+						'<input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"> '+
+						'<span class="input-number-increment">+</span> '+
+					'</div> '+
+				'</div> '+
+			'</div> '+
+		'</div> '+
+	'</div>';
 		 // array of coin objects
 	var currencyContainer = [];	
 
@@ -20,13 +52,17 @@ $(document).ready(function(){
 	for ( var i = 0; i < denominations.length; i++ ) {
 		var c = new Currency();
 		c.denom = denominations[i];
-		c.container = makeDom(cardHTMLString);
-		c.titleContainer = c.container.childNodes[0].childNodes[0].childNodes[0].childNodes[0];  
-		c.counterContainer = c.container.childNodes[0].childNodes[0].childNodes[0].childNodes[3];
-		c.inputContainer = c.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[1];
-		c.decrementButton = c.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[0];
-		c.incrementButton = c.container.childNodes[0].childNodes[0].childNodes[1].childNodes[0].childNodes[2];
-
+		c.container = $(cardHTMLString); 
+		$titleContainer = c.container.find(".card-title");
+		c.titleContainer = $titleContainer;
+		$counterContainer = c.container.find(".counter-container"); 
+		c.counterContainer = $counterContainer;
+		$inputContainer = c.container.find(".input-number");
+		c.inputContainer = $inputContainer;
+		$decrementButton = c.container.find(".input-number-decrement");
+		c.decrementButton = $decrementButton;
+		$incrementButton = c.container.find(".input-number-decrement");
+		c.incrementButton = $incrementButton;
 		if(denominations[i] >= 5.00) {
 			c.type = "note";
 		}
@@ -94,7 +130,8 @@ $(document).ready(function(){
 		
 	});
 
-	$('#asc').parent().addClass("green accent-3");
+	// sort buttons 
+	$('#asc').parent().addClass("green accent-3"); // by default ascending
 	$('.sortBtn').click(function(){
 		var ascendingBool = true; //by default will be ascending
 		// test if ascending - find the first currecny value and compare with first element of the denomination array
@@ -123,7 +160,7 @@ $(document).ready(function(){
 				$('#asc').parent().removeClass("green accent-3");
 			}
 		}
-	})
+	});
 
 
 
@@ -162,7 +199,7 @@ $(document).ready(function(){
 
 	function attachHanlders(obj){
 		// attach event change handler - on change it will update the counter
-		obj.inputContainer.addEventListener("change", function() {
+		obj.inputContainer.change(function() {
 			// set ui count
 			var countElement = obj.counterContainer;
 			countElement.innerHTML = parseInt(this.value);
@@ -189,17 +226,20 @@ $(document).ready(function(){
 		}
 
 		// attach event click handler for decrement button
-		obj.decrementButton.addEventListener("click", function() {
-			obj.inputContainer.value = parseInt(obj.inputContainer.value) - 1;
-			obj.counterContainer.innerHTML = obj.inputContainer.value; 
+		obj.decrementButton.click(function() {
+			var number = parseInt(obj.inputContainer.val()) - 1;
+			obj.inputContainer.val(number);
+		
+			obj.counterContainer.text(number);
+			console.log(parseInt(obj.inputContainer.val()));
 			countColorHandler(obj);
 			calcTotal();
 		});
 
 		// attach event click handler for increment button
-		obj.incrementButton.addEventListener("click", function() {
-			obj.inputContainer.value = parseInt(obj.inputContainer.value) + 1;
-			obj.counterContainer.innerHTML = obj.inputContainer.value;
+		obj.incrementButton.click(function() {
+			obj.inputContainer.val(parseInt(obj.inputContainer.val()) + 1);
+			obj.counterContainer.text(parseInt(obj.inputContainer.val()));
 			countColorHandler(obj);
 			calcTotal();
 		});
@@ -209,14 +249,14 @@ $(document).ready(function(){
 		var countElement = obj.counterContainer;
 
 		if(countElement.innerHTML === 0 || countElement.innerHTML === "0") { 
-			countElement.setAttribute("class", "grey-text"); 
+			countElement.addClass("grey-text"); 
 		}
 		else {
-			countElement.setAttribute("class", "green-text text-accent-3"); 
+			countElement.addClass("green-text text-accent-3"); 
 		}
 	}
 
 
 	$('.button-collapse').sideNav();
+	$('select').material_select();
 });
-
