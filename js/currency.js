@@ -52,8 +52,8 @@ $(document).ready(function(){
 					'<span> X </span> '+
 					'<span class="grey-text counter-container" style="font-size:30px"> 0 </span> '+
 				'</div>'+
-				'<div class="center-align">'+
-					'<span> Bankroll amount: <span id=bankroll>placeholder</span> </span> '+
+				'<div class="center-align bankroll-container">'+
+					'<span> Bankroll amount: <span class="bankroll-amount">placeholder</span> </span> '+
 				'</div>'+
 				'<div class="card-action valign-wrapper" style="padding:10px"> '+
 					'<div style="margin:auto;"> '+
@@ -93,23 +93,38 @@ $(document).ready(function(){
 		c.inputContainer = $inputContainer;
 		$decrementButton = c.container.find(".input-number-decrement");
 		c.decrementButton = $decrementButton;
+		$bankRollContainer = c.container.find(".bankroll-container");
+		c.bankRollContainer = $bankRollContainer;
 		$bankRollDecrementButton = c.container.find(".input-number-bankroll-decrement");
 		c.bankRollDecrementButton = $bankRollDecrementButton;
 		$incrementButton = c.container.find(".input-number-increment");
 		c.incrementButton = $incrementButton;
 		$bankRollIncrementButton = c.container.find(".input-number-bankroll-increment");
 		c.bankRollIncrementButton = $bankRollIncrementButton;
+		$bankRollAmount = c.container.find(".bankroll-amount");
+		c.bankRollAmount = $bankRollAmount;
 		if(denominations[i] >= 5.00) {
 			c.type = "note";
 		}
 		else {
-			c.type = "coin";
+			c.ty = "coin";
 		}
 
 		// UI stuff
-		c.titleContainer.innerHTML = c.denom;
+		c.titleContainer.html(c.denom);
+		c.bankRollAmount.html(c.bankroll);
+		console.log(c.bankRollAmount);
 		// default input to 0 
 		c.inputContainer.val(0);
+
+
+		// remove any demonimations without a bankroll.
+		if( c.bankroll === null ) { 
+			c.bankRollContainer.remove();
+			c.bankRollIncrementButton.remove();
+			c.bankRollDecrementButton.remove();
+		}
+		
 
 		attachHanlders(c);
 
@@ -280,7 +295,7 @@ $(document).ready(function(){
 			var number = 0;
 			var input = parseInt(obj.inputContainer.val());
 			var isInt = /^\+?\d+$/.test(input);
-			if ( input > 0  &&  isInt) {
+			if ( input > obj.bankroll  &&  isInt) {
 				number = input - obj.bankroll;
 			}
 
@@ -341,11 +356,16 @@ $(document).ready(function(){
 	function countColorHandler(obj){
 		var countElement = obj.counterContainer;
 
-		if(countElement.innerHTML === 0 || countElement.innerHTML === "0") { 
+		if(countElement.html() === 0 || countElement.html() === "0") { 
 			countElement.addClass("grey-text"); 
+
+			countElement.removeClass("green-text"); 
+			countElement.removeClass("text-accent-3");
 		}
 		else {
 			countElement.addClass("green-text text-accent-3"); 
+
+			countElement.removeClass("grey-text");
 		}
 	}
 

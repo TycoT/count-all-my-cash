@@ -41,7 +41,9 @@
 
 .input-number,
 .input-number-decrement,
-.input-number-increment {
+.input-number-increment,
+.input-number-bankroll-decrement,
+.input-number-bankroll-increment {
   border: 1px solid #ccc;
   height: 40px;
   -webkit-user-select: none; /* Chrome/Safari */        
@@ -54,7 +56,9 @@
 }
 
 .input-number-decrement,
-.input-number-increment {
+.input-number-increment,
+.input-number-bankroll-decrement,
+.input-number-bankroll-increment {
   display: inline-block;
   width: 30px;
   line-height: 38px;
@@ -65,16 +69,20 @@
   cursor: pointer;
 }
 .input-number-decrement:active,
-.input-number-increment:active {
+.input-number-increment:active,
+.input-number-bankroll-decrement:active,
+.input-number-bankroll-increment:active {
   background: #ddd;
 }
 
-.input-number-decrement {
+.input-number-decrement,
+.input-number-bankroll-decrement {
   /*border-right: none;*/
   border-radius: 4px 0 0 4px;
 }
 
-.input-number-increment {
+.input-number-increment,
+.input-number-bankroll-increment {
   /*border-left: none;*/
   border-radius: 0 4px 4px 0;
 }
