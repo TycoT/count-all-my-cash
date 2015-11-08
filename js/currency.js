@@ -1,6 +1,47 @@
 $(document).ready(function(){
 
-	var denominations = ["0.05","0.10","0.25","1.00","2.00", "5.00","10.00","20.00","50.00","100.00"];
+	var denominations = [
+							{
+								value: "0.05",
+								bankroll: 40
+							},
+							{
+								value: "0.10",
+								bankroll: 50
+							},
+							{
+								value: "0.25",
+								bankroll: 40
+							},
+							{
+								value: "1.00",
+								bankroll: 20
+							},
+							{
+								value: "2.00",
+								bankroll: 25
+							},
+							{
+								value: "5.00",
+								bankroll: 40
+							},
+							{
+								value: "10.00",
+								bankroll: 50
+							},
+							{
+								value: "20.00",
+								bankroll: 25
+							},
+							{
+								value: "50.00",
+								bankroll: null
+							},
+							{
+								value: "100.00",
+								bankroll: null
+							}
+						];
 
 	var cardHTMLString = 
 	'<div class="row valign-wrapper"> '+
@@ -11,26 +52,16 @@ $(document).ready(function(){
 					'<span> X </span> '+
 					'<span class="grey-text counter-container" style="font-size:30px"> 0 </span> '+
 				'</div>'+
-				'<div class="card-action valign-wrapper" style="padding:10px"> '+
-					'<div class="input-field col s12 radio-container" style="margin: 0px 25px 15px 25px;"> '+
-						'<p style="margin-top:0px;margin-bottom:0px;text-align:center;">Bank Roll Amount</p>' +
-						'<form action="#"> '+
-					        '<input class="with-gap" name="group1" type="radio" id="20wrapper"  /> '+
-					        '<label for="20wrapper">20</label> '+
-					        '<input class="with-gap" name="group1" type="radio" id="25wrapper"  /> '+
-					        '<label for="25wrapper">25</label> '+
-					        '<input class="with-gap" name="group1" type="radio" id="40wrapper"  /> '+
-					        '<label for="40wrapper">40</label> '+
-					        '<input class="with-gap" name="group1" type="radio" id="50wrapper"  /> '+
-					        '<label for="50wrapper">50</label> '+
-					    '</form> '+		 			
-				    '</div> '+
-				'</div> '+
+				'<div class="center-align">'+
+					'<span> Bankroll amount: <span id=bankroll>placeholder</span> </span> '+
+				'</div>'+
 				'<div class="card-action valign-wrapper" style="padding:10px"> '+
 					'<div style="margin:auto;"> '+
+						'<span class="input-number-bankroll-decrement">––</span> '+
 						'<span class="input-number-decrement">–</span> '+
 						'<input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"> '+
 						'<span class="input-number-increment">+</span> '+
+						'<span class="input-number-bankroll-increment">++</span> '+
 					'</div> '+
 				'</div> '+
 			'</div> '+
@@ -51,7 +82,8 @@ $(document).ready(function(){
 	// for each denomination defined 
 	for ( var i = 0; i < denominations.length; i++ ) {
 		var c = new Currency();
-		c.denom = denominations[i];
+		c.denom = denominations[i].value;
+		c.bankroll = denominations[i].bankroll;
 		c.container = $(cardHTMLString); 
 		$titleContainer = c.container.find(".card-title");
 		c.titleContainer = $titleContainer;
@@ -61,8 +93,12 @@ $(document).ready(function(){
 		c.inputContainer = $inputContainer;
 		$decrementButton = c.container.find(".input-number-decrement");
 		c.decrementButton = $decrementButton;
-		$incrementButton = c.container.find(".input-number-decrement");
+		$bankRollDecrementButton = c.container.find(".input-number-bankroll-decrement");
+		c.bankRollDecrementButton = $bankRollDecrementButton;
+		$incrementButton = c.container.find(".input-number-increment");
 		c.incrementButton = $incrementButton;
+		$bankRollIncrementButton = c.container.find(".input-number-bankroll-increment");
+		c.bankRollIncrementButton = $bankRollIncrementButton;
 		if(denominations[i] >= 5.00) {
 			c.type = "note";
 		}
@@ -73,7 +109,7 @@ $(document).ready(function(){
 		// UI stuff
 		c.titleContainer.innerHTML = c.denom;
 		// default input to 0 
-		c.inputContainer.value = parseInt(0);
+		c.inputContainer.val(0);
 
 		attachHanlders(c);
 
@@ -122,9 +158,10 @@ $(document).ready(function(){
 			//reset all inputs
 			for ( var i = 0; i < currencyContainer.length; i++ ) {
 				var c = currencyContainer[i];
-				c.counterContainer.innerHTML = 0;
-				c.counterContainer.setAttribute("class", "grey-text"); 
-				c.inputContainer.value = 0;
+				c.counterContainer.text(0);
+				c.counterContainer.addClass("grey-text"); 
+				c.counterContainer.removeClass("green-text"); 
+				c.inputContainer.val(0);
 			}
 		}
 		
@@ -168,17 +205,12 @@ $(document).ready(function(){
 	//	functions
 	/////////////////////////////////////////////////////////////////////////
 
-	function makeDom(some_html) {
-		var d = document.createElement('div');
-		d.innerHTML = some_html;
-		return d.firstChild;
-	}
 
 	function calcTotal() {
 		//currencyContainer loop
 		for ( var i = 0; i < currencyContainer.length; i++ ) {
 			var c = currencyContainer[i];
-			c.count = c.inputContainer.value;
+			c.count = c.inputContainer.val();
 			c.total = ( Math.round( ( parseFloat( c.denom ) * parseFloat( c.count)) * 100 ) / 100 );
 		}
 
@@ -199,47 +231,108 @@ $(document).ready(function(){
 
 	function attachHanlders(obj){
 		// attach event change handler - on change it will update the counter
+		
+		// when user focuses a input box, we want to save the input val before any changes.
+		// we revert to this value when the user tries to input a non-number
+		var prevInput;
+		obj.inputContainer.focus(function() {
+			prevInput = obj.inputContainer.val();
+		});
+
+		// When user enters a custom number in the input box
 		obj.inputContainer.change(function() {
 			// set ui count
 			var countElement = obj.counterContainer;
-			countElement.innerHTML = parseInt(this.value);
-			//count color handler
-			countColorHandler(obj);
-			// calculate total.
-			calcTotal();
+			var input = parseInt(obj.inputContainer.val());
+			var isInt = /^\+?\d+$/.test(input);
+			
+			if ( isInt ) {
+				countElement.html(input);
+				//count color handler
+				countColorHandler(obj);
+				// calculate total.
+				calcTotal();	
+			} 
+			else {
+				obj.inputContainer.val(prevInput);
+			}
+			
 		});
 
 		//if mobile, when user focus on input, we remove the fixed footer, to allow more space
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
 		
-			obj.inputContainer.addEventListener("focus", function() {
-				var footer = document.getElementById("footer-container");
-				footer.setAttribute("style","");
+			var $footer = $("#footer-container");
+
+			obj.inputContainer.focus(function() {
+				$footer.attr("style","");
 				$(".temp").css("display", "none");
 			});
 
-			obj.inputContainer.addEventListener("focusout", function() {
-				var footer = document.getElementById("footer-container");
-				footer.setAttribute("style","position:fixed;width:100%;bottom:0px");
+			obj.inputContainer.focusout(function() {
+				$footer.attr("style","position:fixed;width:100%;bottom:0px");
 				$(".temp").css("display", "inline-block");
 			});
 		}
 
 		// attach event click handler for decrement button
-		obj.decrementButton.click(function() {
-			var number = parseInt(obj.inputContainer.val()) - 1;
+		obj.bankRollDecrementButton.click(function() {
+			var number = 0;
+			var input = parseInt(obj.inputContainer.val());
+			var isInt = /^\+?\d+$/.test(input);
+			if ( input > 0  &&  isInt) {
+				number = input - obj.bankroll;
+			}
+
 			obj.inputContainer.val(number);
 		
 			obj.counterContainer.text(number);
-			console.log(parseInt(obj.inputContainer.val()));
+			countColorHandler(obj);
+			calcTotal();
+		});
+
+		obj.decrementButton.click(function() {
+			var number = 0;
+			var input = parseInt(obj.inputContainer.val());
+			var isInt = /^\+?\d+$/.test(input);
+			if ( input > 0  &&  isInt) {
+				number = input - 1;
+			}
+
+			obj.inputContainer.val(number);
+		
+			obj.counterContainer.text(number);
 			countColorHandler(obj);
 			calcTotal();
 		});
 
 		// attach event click handler for increment button
 		obj.incrementButton.click(function() {
-			obj.inputContainer.val(parseInt(obj.inputContainer.val()) + 1);
-			obj.counterContainer.text(parseInt(obj.inputContainer.val()));
+			var number = 0;
+			var input = parseInt(obj.inputContainer.val());
+			var isInt = /^\+?\d+$/.test(input);
+			if ( input >= 0  &&  isInt) {
+				number = input + 1;
+			}
+
+			obj.inputContainer.val(number);
+
+			obj.counterContainer.text(number);
+			countColorHandler(obj);
+			calcTotal();
+		});
+
+		obj.bankRollIncrementButton.click(function() {
+			var number = 0;
+			var input = parseInt(obj.inputContainer.val());
+			var isInt = /^\+?\d+$/.test(input);
+			if ( input >= 0  &&  isInt) {
+				number = input + obj.bankroll;
+			}
+
+			obj.inputContainer.val(number);
+		
+			obj.counterContainer.text(number);
 			countColorHandler(obj);
 			calcTotal();
 		});
