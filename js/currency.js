@@ -163,9 +163,9 @@ $(document).ready(function(){
 	$inputContainer = customCard.container.find(".input-number");
 	customCard.inputContainer = $inputContainer;
 
-	attachHanlders(customCard); // fix this.
+	// attachHanlders(customCard); // fix this.
 
-	$(".currency-container").append(customCard.container);
+	// $(".currency-container").append(customCard.container);
 
 	currencyContainer.push(c);
 
