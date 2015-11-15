@@ -39,7 +39,6 @@
   outline: none;
 }
 
-.input-number,
 .input-number-decrement,
 .input-number-increment,
 .input-number-bankroll-decrement,
@@ -60,7 +59,7 @@
 .input-number-bankroll-decrement,
 .input-number-bankroll-increment {
   display: inline-block;
-  width: 30px;
+  width: 35px;
   line-height: 38px;
   background: #f1f1f1;
   color: #444;

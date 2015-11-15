@@ -137,6 +137,48 @@ $(document).ready(function(){
 		currencyContainer.push(c);
 	}
 
+	var customCardHTMLString = 
+	'<div class="row valign-wrapper"> '+
+		'<div class="col s12 m6" style="margin:auto"> '+
+			'<div class="card"> '+
+				'<div class="card-content black-text center-align" style="padding:5px;"> '+
+					'<span class="card-title black-text currency-value" style="font-size:30px">Custome Amount: </span> '+
+					'<span class="grey-text counter-container" style="font-size:30px"> 0 </span> '+
+				'</div>'+
+				'<div class="card-action valign-wrapper" style="padding:10px"> '+
+					'<div style="margin:auto;"> '+
+						'<input class="input-number" type="text" value="0" min="0" max="1000" style="width: 173px;width: 80px;padding: 0 12px;vertical-align: top;text-align: center;outline: none;border: 1px solid #ccc;height: 40px;user-select: none;height: 38px;"> '+
+					'</div> '+
+				'</div> '+
+			'</div> '+
+		'</div> '+
+	'</div>';
+
+	var customCard = new Currency();
+	customCard.container = $(customCardHTMLString); 
+	$titleContainer = customCard.container.find(".card-title");
+	customCard.titleContainer = $titleContainer;
+	$counterContainer = customCard.container.find(".counter-container"); 
+	customCard.counterContainer = $counterContainer;
+	$inputContainer = customCard.container.find(".input-number");
+	customCard.inputContainer = $inputContainer;
+
+	attachHanlders(customCard); // fix this.
+
+	$(".currency-container").append(customCard.container);
+
+	currencyContainer.push(c);
+
+	//add the custom card here
+	// add html
+	// custom amount: (#counter container here, will be green when edited)
+	// no bankroll
+	// no buttons, just the input box
+	// add input change handler
+	// append to html
+	// push to currenct container. 	
+
+
 	//add clear button
 	var clearBtn = document.getElementById("clear-button");
 
