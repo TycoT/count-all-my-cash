@@ -113,7 +113,6 @@ $(document).ready(function(){
 		// UI stuff
 		c.titleContainer.html(c.denom);
 		c.bankRollAmount.html(c.bankroll);
-		console.log(c.bankRollAmount);
 		// default input to 0 
 		c.inputContainer.val(0);
 
@@ -142,7 +141,7 @@ $(document).ready(function(){
 		'<div class="col s12 m6" style="margin:auto"> '+
 			'<div class="card"> '+
 				'<div class="card-content black-text center-align" style="padding:5px;"> '+
-					'<span class="card-title black-text currency-value" style="font-size:30px">Custome Amount: </span> '+
+					'<span class="card-title black-text currency-value" style="font-size:30px">Custom Amount: </span> '+
 					'<span class="grey-text counter-container" style="font-size:30px"> 0 </span> '+
 				'</div>'+
 				'<div class="card-action valign-wrapper" style="padding:10px"> '+
@@ -163,11 +162,11 @@ $(document).ready(function(){
 	$inputContainer = customCard.container.find(".input-number");
 	customCard.inputContainer = $inputContainer;
 
-	// attachHanlders(customCard); // fix this.
+	attachHanlders(customCard, true); // fix this.
 
-	// $(".currency-container").append(customCard.container);
+	 $(".currency-container").append(customCard.container);
 
-	currencyContainer.push(c);
+	currencyContainer.push(customCard);
 
 	//add the custom card here
 	// add html
@@ -227,33 +226,53 @@ $(document).ready(function(){
 	// sort buttons 
 	$('#asc').parent().addClass("green accent-3"); // by default ascending
 	$('.sortBtn').click(function(){
-		var ascendingBool = true; //by default will be ascending
-		// test if ascending - find the first currecny value and compare with first element of the denomination array
-		if (denominations[0] == $(".currency-value").first().html()) {
-			ascendingBool = true;
-		}
-		else{
-			ascendingBool = false;
-		}
 
-		if ( this.id == "asc" && !ascendingBool || this.id == "desc" && ascendingBool ){
-			// we ascend it.
+		if ( this.id == "asc" ) {
+			console.log("ASCENDING")
+			$(this).parent().addClass("green accent-3");
+			$('#desc').parent().removeClass("green accent-3");
+
+			// remove all the cards
 			var container = $(".currency-container").children().detach();
-			// looping from the back
-			for ( var i = container.length; i >= 0; i-- ) {
-				$(".currency-container").append(container[i]);
+			// append from container
+			console.log(currencyContainer);
+			for ( var i = 0; i < currencyContainer.length; i++ ) {
+				$(".currency-container").append(currencyContainer[i].container);
 			}
 
-			// change the background of the button
-			if( !ascendingBool ){
-				$('#asc').parent().addClass("green accent-3");
-				$('#desc').parent().removeClass("green accent-3");
-			}
-			else {
-				$('#desc').parent().addClass("green accent-3");
-				$('#asc').parent().removeClass("green accent-3");
+		}
+		else {
+			console.log("DECENDING")
+			$(this).parent().addClass("green accent-3");
+			$('#asc').parent().removeClass("green accent-3");
+
+			// remove all the cards
+			var container = $(".currency-container").children().detach();
+			// append from container
+			for ( var i = currencyContainer.length-1; i >= 0; i-- ) {
+				$(".currency-container").append(currencyContainer[i].container);
 			}
 		}
+
+		// // if what we clicked is asc and its NOT currently ascending OR the other way around
+		// if ( this.id == "asc" && !ascendingBool || this.id == "desc" && ascendingBool ){
+		// 	// we ascend it.
+		// 	var container = $(".currency-container").children().detach();
+		// 	// looping from the back
+		// 	for ( var i = container.length; i >= 0; i-- ) {
+		// 		$(".currency-container").append(container[i]);
+		// 	}
+
+		// 	// change the background of the button
+		// 	if( !ascendingBool ){
+		// 		$('#asc').parent().addClass("green accent-3");
+		// 		$('#desc').parent().removeClass("green accent-3");
+		// 	}
+		// 	else {
+		// 		$('#desc').parent().addClass("green accent-3");
+		// 		$('#asc').parent().removeClass("green accent-3");
+		// 	}
+		// }
 	});
 
 
@@ -267,8 +286,13 @@ $(document).ready(function(){
 		//currencyContainer loop
 		for ( var i = 0; i < currencyContainer.length; i++ ) {
 			var c = currencyContainer[i];
-			c.count = c.inputContainer.val();
-			c.total = ( Math.round( ( parseFloat( c.denom ) * parseFloat( c.count)) * 100 ) / 100 );
+			if ( c.denom == 0 ) { // for custom card.
+				c.total = parseFloat(c.inputContainer.val());
+			}
+			else { // for all the other denominations
+				c.count = c.inputContainer.val();
+				c.total = ( Math.round( ( parseFloat( c.denom ) * parseFloat( c.count)) * 100 ) / 100 );
+			}
 		}
 
 		showTotal();
@@ -286,7 +310,7 @@ $(document).ready(function(){
 
 	}
 
-	function attachHanlders(obj){
+	function attachHanlders(obj, custom){
 		// attach event change handler - on change it will update the counter
 		
 		// when user focuses a input box, we want to save the input val before any changes.
@@ -297,7 +321,27 @@ $(document).ready(function(){
 		});
 
 		// When user enters a custom number in the input box
-		obj.inputContainer.change(function() {
+		if ( custom ) { // this is the change hanlder for just the custom card.
+			obj.inputContainer.change(function() {
+				// set ui count
+				var countElement = obj.counterContainer;
+				var input = parseFloat(obj.inputContainer.val());
+				var isInt =  /^\d+(?:\.\d+|)$/.test(input);
+				
+				if ( isInt ) {
+					countElement.html(input);
+					//count color handler
+					countColorHandler(obj);
+					// calculate total.
+					calcTotal();	
+				} 
+				else {
+					obj.inputContainer.val(prevInput);
+				}
+			});
+		}
+		else {
+			obj.inputContainer.change(function() {
 			// set ui count
 			var countElement = obj.counterContainer;
 			var input = parseInt(obj.inputContainer.val());
@@ -315,6 +359,8 @@ $(document).ready(function(){
 			}
 			
 		});
+		}
+		
 
 		//if mobile, when user focus on input, we remove the fixed footer, to allow more space
 		if( /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ) {
@@ -333,66 +379,69 @@ $(document).ready(function(){
 		}
 
 		// attach event click handler for decrement button
-		obj.bankRollDecrementButton.click(function() {
-			var number = 0;
-			var input = parseInt(obj.inputContainer.val());
-			var isInt = /^\+?\d+$/.test(input);
-			if ( input > obj.bankroll  &&  isInt) {
-				number = input - obj.bankroll;
-			}
+		if ( obj.bankRollDecrementButton && obj.bankRollIncrementButton ) { 
+			obj.bankRollDecrementButton.click(function() {
+				var number = 0;
+				var input = parseInt(obj.inputContainer.val());
+				var isInt = /^\+?\d+$/.test(input);
+				if ( input > obj.bankroll  &&  isInt) {
+					number = input - obj.bankroll;
+				}
 
-			obj.inputContainer.val(number);
+				obj.inputContainer.val(number);
+			
+				obj.counterContainer.text(number);
+				countColorHandler(obj);
+				calcTotal();
+			});
+
+			obj.decrementButton.click(function() {
+				var number = 0;
+				var input = parseInt(obj.inputContainer.val());
+				var isInt = /^\+?\d+$/.test(input);
+				if ( input > 0  &&  isInt) {
+					number = input - 1;
+				}
+
+				obj.inputContainer.val(number);
+			
+				obj.counterContainer.text(number);
+				countColorHandler(obj);
+				calcTotal();
+			});
+
+			// attach event click handler for increment button
+			obj.incrementButton.click(function() {
+				var number = 0;
+				var input = parseInt(obj.inputContainer.val());
+				var isInt = /^\+?\d+$/.test(input);
+				if ( input >= 0  &&  isInt) {
+					number = input + 1;
+				}
+
+				obj.inputContainer.val(number);
+
+				obj.counterContainer.text(number);
+				countColorHandler(obj);
+				calcTotal();
+			});
+
+			obj.bankRollIncrementButton.click(function() {
+				var number = 0;
+				var input = parseInt(obj.inputContainer.val());
+				var isInt = /^\+?\d+$/.test(input);
+				if ( input >= 0  &&  isInt) {
+					number = input + obj.bankroll;
+				}
+
+				obj.inputContainer.val(number);
+			
+				obj.counterContainer.text(number);
+				countColorHandler(obj);
+				calcTotal();
+			});
+		}
 		
-			obj.counterContainer.text(number);
-			countColorHandler(obj);
-			calcTotal();
-		});
-
-		obj.decrementButton.click(function() {
-			var number = 0;
-			var input = parseInt(obj.inputContainer.val());
-			var isInt = /^\+?\d+$/.test(input);
-			if ( input > 0  &&  isInt) {
-				number = input - 1;
-			}
-
-			obj.inputContainer.val(number);
-		
-			obj.counterContainer.text(number);
-			countColorHandler(obj);
-			calcTotal();
-		});
-
-		// attach event click handler for increment button
-		obj.incrementButton.click(function() {
-			var number = 0;
-			var input = parseInt(obj.inputContainer.val());
-			var isInt = /^\+?\d+$/.test(input);
-			if ( input >= 0  &&  isInt) {
-				number = input + 1;
-			}
-
-			obj.inputContainer.val(number);
-
-			obj.counterContainer.text(number);
-			countColorHandler(obj);
-			calcTotal();
-		});
-
-		obj.bankRollIncrementButton.click(function() {
-			var number = 0;
-			var input = parseInt(obj.inputContainer.val());
-			var isInt = /^\+?\d+$/.test(input);
-			if ( input >= 0  &&  isInt) {
-				number = input + obj.bankroll;
-			}
-
-			obj.inputContainer.val(number);
-		
-			obj.counterContainer.text(number);
-			countColorHandler(obj);
-			calcTotal();
-		});
 	}
 
 	function countColorHandler(obj){
